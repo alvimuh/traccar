@@ -1053,6 +1053,14 @@ public class Gt06ProtocolDecoder extends BaseProtocolDecoder {
                 }
             }
 
+            if (type == MSG_GPS_LBS_7 && buf.readableBytes() >= 3 + 4 + 6) {
+                // ACC(1) + report mode(1) + upload mode(1) + mileage(4) + serial(2) + crc(2)
+                buf.readUnsignedByte(); // ACC status
+                buf.readUnsignedByte(); // report mode
+                buf.readUnsignedByte(); // upload mode
+                position.set(Position.KEY_ODOMETER, buf.readUnsignedInt());
+            }
+
             if (buf.readableBytes() == 3 + 6 || buf.readableBytes() == 3 + 4 + 6) {
                 position.set(Position.KEY_IGNITION, buf.readUnsignedByte() > 0);
                 buf.readUnsignedByte(); // upload mode
